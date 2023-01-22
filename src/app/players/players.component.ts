@@ -34,7 +34,7 @@ export class PlayersComponent {
       else
         this.crudButtonsShown = false;
     }, error => {
-      console.log('Error connecting to Split SDK');
+      console.log('Error connecting to LaunchDarkly SDK');
     });
   }
 }
