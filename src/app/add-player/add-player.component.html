@@ -1,0 +1,21 @@
+<p class="title"> Add player</p><br><br>
+
+<form class="form" #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)">
+  <div>
+    <label class="label" for="name">Name</label>
+    <input type="text" name="name" ngModel>
+  </div>
+  <div>
+    <label class="label" for="email">Number of Points</label>
+    <input type="number" id="points" name="points" ngModel>
+  </div>
+  <div>
+    <label class="label" for="email">Number of Championships</label>
+    <input type="number" id="points" name="championships" ngModel>
+  </div>
+  <div>
+    <label class="label" for="email">Number of MVP titles</label>
+    <input type="number" id="points" name="mvpTitles" ngModel>
+  </div>
+  <div><button type="submit">Submit</button></div>
+</form>

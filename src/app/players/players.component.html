@@ -1,0 +1,23 @@
+<header class="header">
+    My basketball list
+    <button (click)="addPlayer()" *ngIf="crudButtonsShown">Add player</button>
+  </header>
+  
+  <main>
+    <div class="player_row">
+      <div class="cell">Name</div>
+      <div class="cell">Points</div>
+      <div class="cell">Championships</div>
+      <div class="cell">MVP titles</div>
+      <div class="cell">Actions</div>
+    </div>
+    <div *ngFor="let player of playerService.players" class="player_row">
+      <div class="cell">{{ player.name}}</div>
+      <div class="cell">{{ player.points}}</div>
+      <div class="cell">{{ player.championshipCount}}</div>
+      <div class="cell">{{ player.mvpCount}}</div>
+      <div class="cell">
+        <button *ngIf="crudButtonsShown" (click)="deletePlayer(player.id)">delete</button>
+      </div>
+    </div>
+  </main>
