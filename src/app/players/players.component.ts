@@ -19,10 +19,12 @@ export class PlayersComponent {
     private darklyService: DarklyService,
     private router: Router,
     public playerService: PlayerService,
-    ) { this.show = darklyService.flags['beta_users'];
-      this._subscription = darklyService.flagChange.subscribe((flags) => {
-      this.show = flags['beta_users'].current;
-  })}
+    ) { 
+    //   this.show = darklyService.flags['beta_users'];
+    //   this._subscription = darklyService.flagChange.subscribe((flags) => {
+    //   this.show = flags['beta_users'].current;
+    // })
+  }
 
   addPlayer() {
     this.router.navigate(['/add-player']);
