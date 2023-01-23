@@ -14,7 +14,7 @@ export class DarklyService {
   public sdkReady$: Subject<void> = new Subject<void>();
 
   constructor() {
-    this.flags = {'toh-modify': false, 'toh-search': false};
+    this.flags = {'beta_users': false};
 
     // edit here to add the key
     this.ldClient = initialize("61faede4102b18146a95fddc",
@@ -25,11 +25,8 @@ export class DarklyService {
     // figure out how to re render components
 
     this.ldClient.on('change', (flags) => {
-      if(flags['toh-modify'] !== undefined) {
-        this.flags['toh-modify'] = flags['toh-modify'];
-      }
-      if(flags['toh-search'] !== undefined) {
-        this.flags['toh-search'] = flags['toh-search'];
+      if(flags['beta_users'] !== undefined) {
+        this.flags['beta_users'] = flags['beta_users'];
       }
       this.flagChange.next(this.flags);
       console.log("Flags updated.")

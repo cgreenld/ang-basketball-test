@@ -11,11 +11,18 @@ import { DarklyService } from '../services/darkly.service';
 })
 export class PlayersComponent {
   crudButtonsShown: boolean = false;
+  show: boolean;
+  _subscription: any;
+
+
   constructor(
     private darklyService: DarklyService,
     private router: Router,
-    public playerService: PlayerService
-  ) { }
+    public playerService: PlayerService,
+    ) { this.show = darklyService.flags['beta_users'];
+      this._subscription = darklyService.flagChange.subscribe((flags) => {
+      this.show = flags['beta_users'].current;
+  })}
 
   addPlayer() {
     this.router.navigate(['/add-player']);
