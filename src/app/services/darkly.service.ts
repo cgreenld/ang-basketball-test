@@ -2,57 +2,68 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { initialize, LDClient, LDFlagSet } from 'launchdarkly-js-client-sdk';
 
-// set up a user to pass 
+// here is a model "darkly" service that you can use to connect and leverage LaunchDarkly Flags in an angular application
+// for those looking to see where flags are applied, the players component toggles the "add player" button with a flag
 
 @Injectable({
   providedIn: 'root'
 })
 export class DarklyService {
   ldClient: LDClient;
-  flags: LDFlagSet;
-  flagChange:Subject<Object> = new Subject<Object>();
-  public sdkReady$: Subject<void> = new Subject<void>();
+  public flagsReady$: Subject<void> = new Subject<void>(); // this will be used to understand flag state during initalization and indentify calls
 
   constructor() {
-    this.flags = {'beta_users': false};
-
-    // edit here to add the key
-    this.ldClient = initialize("61faede4102b18146a95fddc",
+    // add the launchdarkly client side here in order to reference the specfic environemnt
+    this.ldClient = initialize("",
       { key: "connortest", 
         anonymous: false 
       }
     );
-    // figure out how to re render components
 
-    this.ldClient.on('change', (flags) => {
-      if(flags['beta_users'] !== undefined) {
-        this.flags['beta_users'] = flags['beta_users'];
-      }
-      this.flagChange.next(this.flags);
+    this.ldClient.on('change', () => {
+      this.flagsReady$.next(); // here we want to update the object as well since we had a change to the flag values
       console.log("Flags updated.")
    });
 
    this.ldClient.on('ready', () => {
-    console.log("we should be done now")
-    this.setFlags();
-    this.sdkReady$.next();
-    return this.ldClient;
-     // render app
+    console.log("SDK Initalized")
+    this.flagsReady$.next(); // update the flag state since we now have a client ready to use
+    return this.ldClient; // return that client
    })
   }
 
+   getFlagBooleanValue(key:string, defaultValue: boolean) {
+    if (defaultValue == null || defaultValue == undefined) {
+      defaultValue = false
+    }
+    // insert possible logging if needed
+    return this.ldClient.variation(key,defaultValue)
+  }
+
   changeUser(user: string) {
-    console.log("updating user")
+    console.log("updating user") // this can be modified with a more complex object to pass or dedicated fields
+    /*
+
+    below could be an example of a user object, in early 2023 this will be updated to the idea of context, 
+    but the idea remains of passing information that can then be used to target features
+
+    
+    user  = {
+      key: ""
+      email: ""
+      custom: {
+        division: ""
+        age: ""
+      }
+    }
+
+    */
     if(user !== "Anonymous") {
       this.ldClient.identify({key: user, name: user, anonymous: false});
     }
     else {
       this.ldClient.identify({key: 'anon', anonymous: true});
     }
-  }
-  setFlags() {
-    this.flags = this.ldClient.allFlags();
-    console.log("Flags initialized.");
   }
 }
 

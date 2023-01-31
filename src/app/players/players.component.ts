@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PlayerService } from '../services/player.service';
-import { LDClient } from 'launchdarkly-js-client-sdk';
 import { DarklyService } from '../services/darkly.service';
 
 @Component({
@@ -20,10 +19,6 @@ export class PlayersComponent {
     private router: Router,
     public playerService: PlayerService,
     ) { 
-    //   this.show = darklyService.flags['beta_users'];
-    //   this._subscription = darklyService.flagChange.subscribe((flags) => {
-    //   this.show = flags['beta_users'].current;
-    // })
   }
 
   addPlayer() {
@@ -34,11 +29,8 @@ export class PlayersComponent {
     this.playerService.deletePlayer(id);
   }
   ngOnInit() {
-    this.darklyService.sdkReady$.subscribe(() => {
-      const treatment = this.darklyService.ldClient.variation("beta_users",false);
-      console.log('treatment:', treatment)
-
-      if (treatment === true)
+    this.darklyService.flagsReady$.subscribe(() => {
+      if (this.darklyService.getFlagBooleanValue("beta_users", false) === true)
         this.crudButtonsShown = true;
       else
         this.crudButtonsShown = false;
